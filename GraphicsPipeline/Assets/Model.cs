@@ -12,7 +12,7 @@ public class Modle
     List<Vector2> _texture_coordinates;
     List<Vector3Int> _texture_index_list;
     List<Vector3> normals;
-
+    
     public List<Vector3> _vertices { get { return verticies; } }
     public List<int> _index_list
     {
@@ -180,8 +180,8 @@ public class Modle
         normals.Add(Vector3.left);
 
         //arm top
-        faces.Add(new Vector3Int(20, 21, 30));
-        faces.Add(new Vector3Int(20, 30, 36));
+        faces.Add(new Vector3Int(20, 21, 37));
+        faces.Add(new Vector3Int(20, 37, 36));
         _texture_index_list.Add(new Vector3Int(2, 3, 0)); _texture_index_list.Add(new Vector3Int(2, 0, 1));
         normals.Add(Vector3.up);
         normals.Add(Vector3.up);
@@ -226,7 +226,7 @@ public class Modle
         normals.Add(Vector3.forward);
         normals.Add(Vector3.forward);
 
-        faces.Add(new Vector3Int(30, 34, 32));
+        faces.Add(new Vector3Int(30, 36, 32));
         faces.Add(new Vector3Int(30, 34, 36));
         _texture_index_list.Add(new Vector3Int(2, 3, 0)); _texture_index_list.Add(new Vector3Int(2, 0, 1));
         normals.Add(Vector3.forward);
@@ -267,9 +267,16 @@ public class Modle
         normals.Add(Vector3.down);
         normals.Add(Vector3.down);
 
+        //hook right face
+        faces.Add(new Vector3Int(32, 37, 33));
+        faces.Add(new Vector3Int(32, 36, 37));
+        _texture_index_list.Add(new Vector3Int(2, 3, 0)); _texture_index_list.Add(new Vector3Int(2, 0, 1));
+        normals.Add(Vector3.right);
+        normals.Add(Vector3.right);
+
         //main back face 
         faces.Add(new Vector3Int(1, 7, 11));
-        faces.Add(new Vector3Int(1, 11, 7));
+        faces.Add(new Vector3Int(1, 11, 9));
         _texture_index_list.Add(new Vector3Int(2, 3, 0)); _texture_index_list.Add(new Vector3Int(2, 0, 1));
         normals.Add(Vector3.back);
         normals.Add(Vector3.back);
@@ -294,14 +301,75 @@ public class Modle
 
         _texture_coordinates = new List<Vector2>();
 
+        //0
         _texture_coordinates.Add(new Vector2(0, 0));
-        _texture_coordinates.Add(new Vector2(1, 0));
-        _texture_coordinates.Add(new Vector2(1, 1));
-        _texture_coordinates.Add(new Vector2(0, 1));
+        //1
+        _texture_coordinates.Add(new Vector2(200, 0));
+        //2
+        _texture_coordinates.Add(new Vector2(0, 66));
+        //3
+        _texture_coordinates.Add(new Vector2(73, 66));
+        //4
+        _texture_coordinates.Add(new Vector2(147, 66));
+        //5
+        _texture_coordinates.Add(new Vector2(200, 66));
+        //6
+        _texture_coordinates.Add(new Vector2(0, 418));
+        //7
+        _texture_coordinates.Add(new Vector2(33, 418));
+        //8
+        _texture_coordinates.Add(new Vector2(33, 458));
+        //9
+        _texture_coordinates.Add(new Vector2(73, 458));
+       //10
+        _texture_coordinates.Add(new Vector2(0, 478));
+        //11
+        _texture_coordinates.Add(new Vector2(31, 511));
+        //12
+        _texture_coordinates.Add(new Vector2(146, 511));
+        
+        //13
+        _texture_coordinates.Add(new Vector2(313, 0));
+        //14
+        _texture_coordinates.Add(new Vector2(511, 511));
+        //15
+        _texture_coordinates.Add(new Vector2(313, 66));
+        //16
+        _texture_coordinates.Add(new Vector2(366, 66));
+        //17
+        _texture_coordinates.Add(new Vector2(439, 66));
+        //18
+        _texture_coordinates.Add(new Vector2(511, 66));
+        //19
+        _texture_coordinates.Add(new Vector2(479, 418));
+        //20
+        _texture_coordinates.Add(new Vector2(511, 418));
+        //21
+        _texture_coordinates.Add(new Vector2(440, 458));
+        //22
+        _texture_coordinates.Add(new Vector2(479, 458));
+        //23
+        _texture_coordinates.Add(new Vector2(511, 478));
+        //24
+        _texture_coordinates.Add(new Vector2(478, 511));
+        //25
+        _texture_coordinates.Add(new Vector2(366, 511));
 
 
+        _texture_coordinates = ConvertToRelitive(_texture_coordinates);
 
+    }
 
+    private List<Vector2> ConvertToRelitive(List<Vector2> texture_coordinates)
+    {
+        List<Vector2> outputList = new List<Vector2>();
+
+        foreach(Vector2 v in texture_coordinates)
+        {
+            outputList.Add(new Vector2(v.x/511f,(511-v.y)/511));
+        }
+
+        return outputList;
     }
 
     public GameObject CreateUnityGameObject()
