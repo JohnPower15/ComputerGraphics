@@ -31,7 +31,8 @@ public class graphicsPipe : MonoBehaviour
         sr.WriteLine("image after rotation vertices");
         write_vertices_to_file(sr,image_after_rotation);
 
-        Matrix4x4 scaleMatrix = Matrix4x4.Scale(new Vector3(2, 3, 4));
+       // Matrix4x4 scaleMatrix = Matrix4x4.Scale(new Vector3(8, 2, 3));
+        Matrix4x4 scaleMatrix = Matrix4x4.Scale(new Vector3(1, 1, 1));
         sr.WriteLine("scale Matrix");
         write_matrix_to_file(sr,scaleMatrix);
 
@@ -39,7 +40,7 @@ public class graphicsPipe : MonoBehaviour
         sr.WriteLine("image after scale");
         write_vertices_to_file(sr,image_after_scale);
 
-        Matrix4x4 traslationMatrix = Matrix4x4.Translate(new Vector3(4, 2, 3));
+        Matrix4x4 traslationMatrix = Matrix4x4.Translate(new Vector3(1, -2, 4));
         sr.WriteLine("translation Matrix");
         write_matrix_to_file(sr,traslationMatrix);
 
@@ -58,7 +59,7 @@ public class graphicsPipe : MonoBehaviour
         
 
 
-        Matrix4x4 camera = Matrix4x4.LookAt(new Vector3(9,2,49), new Vector3(-1,7,-1), (new Vector3(0,-1,7)).normalized);
+        Matrix4x4 camera = Matrix4x4.LookAt(new Vector3(10,6,53), new Vector3(3,8,3), (new Vector3(4,3,8)).normalized);
         sr.WriteLine("camera Matrix");
         write_matrix_to_file(sr, camera);
 
@@ -74,10 +75,13 @@ public class graphicsPipe : MonoBehaviour
         sr.WriteLine("final image");
         write_vertices_to_file(sr, final_image);
 
-        Matrix4x4 single_mateix_for_everything = matrix_of_transformations * camera * proj;
+        Matrix4x4 single_mateix_for_everything =proj * camera  * matrix_of_transformations ;
         sr.WriteLine("the everything Matrix");
         write_matrix_to_file(sr, single_mateix_for_everything);
 
+        List<Vector3> final_image_using_sigle_matxix = find_image_of(original, single_mateix_for_everything);
+        sr.WriteLine("final image using single matrix");
+        write_vertices_to_file(sr, final_image_using_sigle_matxix);
 
         sr.Close();
     }
@@ -85,9 +89,9 @@ public class graphicsPipe : MonoBehaviour
     {
         List<Vector3> new_image = new List<Vector3>();
         foreach (Vector3 v in vertices)
-            new_image.Add(matrix_of_transform * v);
+            new_image.Add(matrix_of_transform * new Vector4(v.x,v.y,v.z,1));
 
-        
+      
 
         return new_image;
 
@@ -96,7 +100,7 @@ public class graphicsPipe : MonoBehaviour
     void write_vertices_to_file(StreamWriter sr, List<Vector3> vertices)
     {
         foreach (var val in vertices)
-        sr.WriteLine(val);
+        sr.WriteLine(val.x + " , " + val.y + " , " + val.z);
         //sr.Close();
 
     }
