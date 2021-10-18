@@ -209,12 +209,12 @@ public class Modle
         normals.Add(Vector3.forward);
 
         faces.Add(new Vector3Int(12, 28, 14)); _texture_index_list.Add(new Vector3Int(3, 12, 4));
-        faces.Add(new Vector3Int(12, 26, 28)); _texture_index_list.Add(new Vector3Int(3, 9, 12)); /*  9 is wrong  */
+        faces.Add(new Vector3Int(12, 26, 28)); _texture_index_list.Add(new Vector3Int(3, 9, 12)); 
         normals.Add(Vector3.forward);
         normals.Add(Vector3.forward);
 
         faces.Add(new Vector3Int(20, 34, 24)); _texture_index_list.Add(new Vector3Int(9, 10, 11));
-        faces.Add(new Vector3Int(20, 24, 26)); _texture_index_list.Add(new Vector3Int(9, 11, 12)); /*  9 is wrong  */
+        faces.Add(new Vector3Int(20, 24, 26)); _texture_index_list.Add(new Vector3Int(9, 11, 12)); 
         normals.Add(Vector3.forward);
         normals.Add(Vector3.forward);
 
@@ -236,14 +236,14 @@ public class Modle
         normals.Add(Vector3.down);
 
         //top right face
-        faces.Add(new Vector3Int(6, 11, 7)); _texture_index_list.Add(new Vector3Int(0, 5, 1));
-        faces.Add(new Vector3Int(6, 10, 11)); _texture_index_list.Add(new Vector3Int(0, 2, 5));
+        faces.Add(new Vector3Int(6, 7, 11)); _texture_index_list.Add(new Vector3Int(0, 5, 1));
+        faces.Add(new Vector3Int(6, 11, 10)); _texture_index_list.Add(new Vector3Int(0, 2, 5));
         normals.Add(Vector3.right);
         normals.Add(Vector3.right);
 
         //neck right face
         faces.Add(new Vector3Int(14, 29, 15)); _texture_index_list.Add(new Vector3Int(1, 15, 13));
-        faces.Add(new Vector3Int(14, 28, 29)); _texture_index_list.Add(new Vector3Int(3, 5, 15));
+        faces.Add(new Vector3Int(14, 28, 29)); _texture_index_list.Add(new Vector3Int(1, 5, 15));
         normals.Add(Vector3.right);
         normals.Add(Vector3.right);
 
@@ -255,7 +255,7 @@ public class Modle
 
         //hook right face
         faces.Add(new Vector3Int(32, 37, 33)); _texture_index_list.Add(new Vector3Int(1, 15, 13));
-        faces.Add(new Vector3Int(32, 36, 37)); _texture_index_list.Add(new Vector3Int(3, 5, 15));
+        faces.Add(new Vector3Int(32, 36, 37)); _texture_index_list.Add(new Vector3Int(1, 5, 15));
         normals.Add(Vector3.right);
         normals.Add(Vector3.right);
 
@@ -266,7 +266,7 @@ public class Modle
         normals.Add(Vector3.back);
 
         faces.Add(new Vector3Int(13, 15, 29)); _texture_index_list.Add(new Vector3Int(16, 17, 25));
-        faces.Add(new Vector3Int(13, 29, 27)); _texture_index_list.Add(new Vector3Int(16, 25, 21)); //off
+        faces.Add(new Vector3Int(13, 29, 27)); _texture_index_list.Add(new Vector3Int(16, 25, 21)); 
         normals.Add(Vector3.back);
         normals.Add(Vector3.back);
 
@@ -274,12 +274,12 @@ public class Modle
         faces.Add(new Vector3Int(21, 25, 35)); _texture_index_list.Add(new Vector3Int(21, 24, 23));
         normals.Add(Vector3.back);
         normals.Add(Vector3.back);
-
+ 
         faces.Add(new Vector3Int(31, 37, 35)); _texture_index_list.Add(new Vector3Int(20, 22, 23));
         faces.Add(new Vector3Int(31, 33, 37)); _texture_index_list.Add(new Vector3Int(20, 19, 22));
         normals.Add(Vector3.back);
         normals.Add(Vector3.back);
-        #endregion
+       #endregion
 
         _texture_coordinates = new List<Vector2>();
         #region textureCords
@@ -312,7 +312,7 @@ public class Modle
         //13
         _texture_coordinates.Add(new Vector2(313, 0));
         //14
-        _texture_coordinates.Add(new Vector2(511, 511));
+        _texture_coordinates.Add(new Vector2(511, 0));
         //15
         _texture_coordinates.Add(new Vector2(313, 66));
         //16
