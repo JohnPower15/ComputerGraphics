@@ -12,6 +12,7 @@ public class graphicsPipe : MonoBehaviour
     // Start is called before the first frame updat
     void Start()
     {
+       
         var fileName = "Matrix.txt";
         var sr = File.CreateText(fileName);
 
@@ -115,5 +116,48 @@ public class graphicsPipe : MonoBehaviour
     void Update()
     {
         
+    }
+
+    bool lineclip(ref Vector2 start, ref Vector2 finish)
+    {
+        Outcode startOutcode = new Outcode(start);
+        Outcode finishOutcode = new Outcode(finish);
+
+        if ((startOutcode == new Outcode()) && (finishOutcode == new Outcode()))
+        {
+            print("Trivial acepted");
+            return true;
+        }
+        if ((startOutcode * finishOutcode)!= new Outcode())
+        {
+            print("Trivial rejected");
+            start = new Vector2(0, 0);
+            return false;
+        }
+        
+        if (startOutcode.up)
+        {
+           start = intercept(start, finish, 0);
+            return lineclip(ref start, ref finish);
+        }
+        //work to do
+
+        return true;
+    }
+
+    Vector2 intercept(Vector2 start, Vector2 end, int edgeId)
+    {
+        float m = (end.y - start.y) / (end.x - start.x);
+        switch (edgeId) {
+            case 0:
+                return new Vector2(start.x+(1-start.y)/m,1);
+            case 1:
+                return new Vector2(start.x + (-1 - start.y) / m, -1);
+            case 2:
+                return new Vector2(-1, start.y + m * (-1 - start.x));
+            default:
+                return new Vector2(1, start.y + m * (1 - start.x));
+        }
+
     }
 }
