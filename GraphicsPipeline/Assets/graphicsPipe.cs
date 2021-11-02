@@ -12,7 +12,25 @@ public class graphicsPipe : MonoBehaviour
     // Start is called before the first frame updat
     void Start()
     {
-       
+           Vector2 start = new Vector2(-3.5f, 1.5f);
+           Vector2 finish = new Vector2(-1, -5);
+           
+
+        if (lineclip(ref start, ref finish))
+        {
+            print("drawLine");
+        }
+        else
+            print("drop line");
+        
+        
+        /*for (int i = 0; i < 4; i++)
+        {
+            Vector2 inter = intercept(start, finish, i);
+            print(inter);
+        }
+        */
+
         var fileName = "Matrix.txt";
         var sr = File.CreateText(fileName);
 
@@ -134,15 +152,38 @@ public class graphicsPipe : MonoBehaviour
             start = new Vector2(0, 0);
             return false;
         }
-        
+        if( startOutcode==new Outcode())
+        {
+            print("start acepted");
+            return lineclip(ref finish, ref start);
+        }
         if (startOutcode.up)
         {
-           start = intercept(start, finish, 0);
+            print("above clip");
+            start = intercept(start, finish, 0);
+            return lineclip(ref start, ref finish);
+        }
+        if (startOutcode.down)
+        {
+            print("down clip");
+            start = intercept(start, finish, 1);
+            return lineclip(ref start, ref finish);
+        }
+        if (startOutcode.left)
+        {
+            print("left clip");
+            start = intercept(start, finish, 2);
+            return lineclip(ref start, ref finish);
+        }
+        if (startOutcode.right)
+        {
+            print("right clip");
+            start = intercept(start, finish, 3);
             return lineclip(ref start, ref finish);
         }
         //work to do
 
-        return true;
+        return false;
     }
 
     Vector2 intercept(Vector2 start, Vector2 end, int edgeId)
@@ -160,4 +201,7 @@ public class graphicsPipe : MonoBehaviour
         }
 
     }
+
+    
+
 }
