@@ -8,11 +8,13 @@ public class Modle
     int hellow;
 
     List<Vector3> verticies;
-    List<Vector3Int> faces;
+    internal List<Vector3Int> faces;
     List<Vector2> _texture_coordinates;
     List<Vector3Int> _texture_index_list;
     List<Vector3> normals;
     
+
+
     public List<Vector3> _vertices { get { return verticies; } }
     public List<int> _index_list
     {
@@ -341,6 +343,79 @@ public class Modle
 
     }
 
+    internal void draw(Texture2D screen, Matrix4x4 final_matxix)
+    {
+        List<Vector3> image_of_modle = graphicsPipe.find_image_of(_vertices, final_matxix);
+        foreach (Vector3Int face in faces)
+        {
+
+            Vector3 A = image_of_modle[face.x];
+            Vector3 B = image_of_modle[face.y];
+            Vector3 C = image_of_modle[face.z];
+
+            Vector2 point_1 = new Vector2(A.x / A.z, A.y / A.z);
+            Vector2 point_2 = new Vector2(B.x / B.z, B.y / B.z);
+            Vector2 point_3 = new Vector2(C.x / C.z, C.y / C.z);
+
+            //if (A.z < 0) Debug.Log("A z neg");
+            //else Debug.Log("A z pos");
+            //Debug.Log("-------");
+            //Debug.Log(point_1);
+            //Debug.Log(point_2);
+            //Debug.Log(point_3);
+
+            if (graphicsPipe.lineclip(ref point_1, ref point_2))
+            {
+                plot(graphicsPipe.breshenham(graphicsPipe.convert(point_1, screen), graphicsPipe.convert(point_2, screen)),screen);
+            }
+            point_2 = new Vector2(B.x / B.z, B.y / B.z);
+            if (graphicsPipe.lineclip(ref point_2, ref point_3))
+            {
+                plot(graphicsPipe.breshenham(graphicsPipe.convert(point_2, screen), graphicsPipe.convert(point_3, screen)),screen);
+            }
+            point_1 = new Vector2(A.x / A.z, A.y / A.z);
+            point_3 = new Vector2(C.x / C.z, C.y / C.z);
+            if (graphicsPipe.lineclip(ref point_3, ref point_1))
+            {
+                plot(graphicsPipe.breshenham(graphicsPipe.convert(point_3, screen), graphicsPipe.convert(point_1, screen)),screen);
+            }
+
+
+
+
+
+
+                fillAlgorithem(get_center_of_triangle(graphicsPipe.convert( point_1, screen), graphicsPipe.convert(point_2, screen), graphicsPipe.convert(point_3, screen)),Color.black,screen);
+
+            //screen.Apply();
+        }
+         screen.Apply();
+    }
+
+    private void fillAlgorithem(Vector2Int point, Color color, Texture2D screen)
+    {     
+        if (isValid(point,screen, color))
+        { screen.SetPixel(point.x, point.y, color);
+            
+            fillAlgorithem(new Vector2Int(point.x + 1, point.y), color,screen);
+           fillAlgorithem(new Vector2Int(point.x - 1, point.y), color, screen);
+            fillAlgorithem(new Vector2Int(point.x , point.y+1), color, screen);
+            fillAlgorithem(new Vector2Int(point.x , point.y-1), color, screen);
+        }
+
+    }
+
+    private bool isValid(Vector2Int point, Texture2D screen, Color color)
+    {
+        return (point.x >= 0) && (point.x < screen.width) && (point.y >= 0) && (point.y < screen.height) && (screen.GetPixel(point.x, point.y) != Color.red) && (screen.GetPixel(point.x, point.y) != color);
+    }
+
+    private Vector2Int get_center_of_triangle(Vector2Int point1, Vector2Int point2, Vector2Int point3)
+    {
+        Vector2Int center = new Vector2Int((point1.x + point2.x + point3.x) / 3, (point1.y + point2.y + point3.y) / 3);
+        return center;
+    }
+
     private List<Vector2> ConvertToRelitive(List<Vector2> texture_coordinates)
     {
         List<Vector2> outputList = new List<Vector2>();
@@ -352,7 +427,15 @@ public class Modle
 
         return outputList;
     }
+    private void plot(List<Vector2Int> vector2Ints, Texture2D screen)
+    {
+        foreach (Vector2Int vector in vector2Ints)
+        {
+            screen.SetPixel(vector.x, vector.y, Color.red);
 
+        }
+        
+    }
     public GameObject CreateUnityGameObject()
     {
         Mesh mesh = new Mesh();
@@ -386,4 +469,6 @@ public class Modle
         return newGO;
 
     }
+
+
 }
