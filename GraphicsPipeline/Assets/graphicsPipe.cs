@@ -7,23 +7,41 @@ public class graphicsPipe : MonoBehaviour
 {
     GameObject myLetter_GO;
     Modle myLetter;
-    
+   
+
+    Renderer myRenderer;
+    Texture2D screen;
+    private List<Vector3> final_image_using_sigle_matxix;
+    private float d;
+
+
 
     // Start is called before the first frame updat
     void Start()
     {
-           Vector2 start = new Vector2(-3.5f, 1.5f);
-           Vector2 finish = new Vector2(-1, -5);
-           
+    //       Vector2 start = new Vector2(-3.5f, 1.5f);
+      //     Vector2 finish = new Vector2(-1, -5);
+        screen = new Texture2D(1024,1024, TextureFormat.ARGB32, false);
+        
+        myRenderer = FindObjectOfType<Renderer>();
 
-        if (lineclip(ref start, ref finish))
-        {
-            print("drawLine");
-        }
-        else
-            print("drop line");
-        
-        
+        myRenderer.material.mainTexture = screen;
+        myRenderer.material.shader = Shader.Find("Transparent/Diffuse");
+      
+       
+        //if (lineclip(ref start, ref finish))
+        //{
+        //    print("drawLine");
+        //}
+        //else
+        //    print("drop line");
+
+        Vector2Int Testing1 = new Vector2Int(10, 10);
+        Vector2Int Testing2 = new Vector2Int(20, 17);
+
+        List<Vector2Int> outputS = breshenham(Testing1, Testing2);
+
+
         /*for (int i = 0; i < 4; i++)
         {
             Vector2 inter = intercept(start, finish, i);
@@ -36,7 +54,7 @@ public class graphicsPipe : MonoBehaviour
 
 
         myLetter = new Modle();
-        myLetter_GO = myLetter.CreateUnityGameObject();
+        //myLetter_GO = myLetter.CreateUnityGameObject();
 
         List<Vector3> original = myLetter._vertices;
         sr.WriteLine("Original vertices");
@@ -94,17 +112,30 @@ public class graphicsPipe : MonoBehaviour
         sr.WriteLine("final image");
         write_vertices_to_file(sr, final_image);
 
-        Matrix4x4 single_mateix_for_everything =proj * camera  * matrix_of_transformations ;
+        Matrix4x4 single_mateix_for_everything =proj * Matrix4x4.identity  * Matrix4x4.Translate(new Vector3(0, 0, 5)); 
         sr.WriteLine("the everything Matrix");
         write_matrix_to_file(sr, single_mateix_for_everything);
 
-        List<Vector3> final_image_using_sigle_matxix = find_image_of(original, single_mateix_for_everything);
+         final_image_using_sigle_matxix = find_image_of(original, single_mateix_for_everything);
         sr.WriteLine("final image using single matrix");
         write_vertices_to_file(sr, final_image_using_sigle_matxix);
 
         sr.Close();
+
+        
+        
+            
+
     }
-    private List<Vector3> find_image_of(List<Vector3> vertices, Matrix4x4 matrix_of_transform)
+
+    
+
+    public static Vector2Int convert(Vector2 point, Texture2D screen)
+    {
+        return new Vector2Int((int)(((point.x+1)/2)*(screen.width-1)), (int)((( 1+point.y) / 2) * (screen.height - 1)));
+    }
+
+    public static List<Vector3> find_image_of(List<Vector3> vertices, Matrix4x4 matrix_of_transform)
     {
         List<Vector3> new_image = new List<Vector3>();
         foreach (Vector3 v in vertices)
@@ -133,28 +164,36 @@ public class graphicsPipe : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        Matrix4x4 camera = Matrix4x4.LookAt(new Vector3(0, 0, 0), new Vector3(0,0,1), (new Vector3(0,1,0)).normalized);
+        Matrix4x4 proj = Matrix4x4.Perspective(90, 16 / 9, 1, 1000);
+        d +=10; ;
+        screen = new Texture2D(screen.width, screen.height, TextureFormat.RGBA32, false);
+        myRenderer.material.mainTexture = screen;
         
+        Matrix4x4 final_matxix = proj*camera* Matrix4x4.Translate(new Vector3(8, 0, 10))*Matrix4x4.Rotate(Quaternion.AngleAxis(d, new Vector3(0,1,0)))*Matrix4x4.Translate(new Vector3(-8, 0, -10)) * Matrix4x4.Translate(new Vector3(0,0,10));
+        myLetter.draw(screen, final_matxix);
     }
 
-    bool lineclip(ref Vector2 start, ref Vector2 finish)
+    public static bool lineclip(ref Vector2 start, ref Vector2 finish)
     {
         Outcode startOutcode = new Outcode(start);
         Outcode finishOutcode = new Outcode(finish);
 
         if ((startOutcode == new Outcode()) && (finishOutcode == new Outcode()))
         {
-            print("Trivial acepted");
+            //print("Trivial acepted");
             return true;
         }
         if ((startOutcode * finishOutcode)!= new Outcode())
         {
-            print("Trivial rejected");
-            start = new Vector2(0, 0);
+           // print("Trivial rejected");
+            
             return false;
         }
         if( startOutcode==new Outcode())
         {
-            print("start acepted");
+            //print("start acepted");
             return lineclip(ref finish, ref start);
         }
         if (startOutcode.up)
@@ -186,7 +225,7 @@ public class graphicsPipe : MonoBehaviour
         return false;
     }
 
-    Vector2 intercept(Vector2 start, Vector2 end, int edgeId)
+    public static Vector2 intercept(Vector2 start, Vector2 end, int edgeId)
     {
         float m = (end.y - start.y) / (end.x - start.x);
         switch (edgeId) {
@@ -202,6 +241,96 @@ public class graphicsPipe : MonoBehaviour
 
     }
 
-    
+    public static List<Vector2Int> breshenham(Vector2Int start, Vector2Int end)
+    {
+        List<Vector2Int> output_list = new List<Vector2Int>();
+
+        int x0 = (int) start.x;
+        int y0 = (int)start.y;
+
+        int x1 = (int)end.x;
+        int y1 = (int)end.y;
+
+        int dx = x1 - x0, dy = y1-y0;
+
+        int p = 2*dy - dx;
+
+        if (dx < 0)
+            return breshenham(end, start);
+
+        if (dy > dx)
+            return swap_XandY(breshenham(swap_XandY(start), swap_XandY(end)));
+
+        if (dy < 0)
+            return negY(breshenham(negY(start), negY(end)));
+
+        while (x0 <= x1)
+        {
+            Vector2Int addVector = new Vector2Int(x0, y0);
+            output_list.Add(addVector);
+
+            x0++;
+            if (p <= 0)
+            {
+                p += 2 * dy;
+            }
+            else
+            {
+                y0++;
+                p += 2 * (dy - dx);
+            }
+            
+        }
+        return output_list;
+    }
+
+
+    public static Vector2Int swap_XandY(Vector2Int vector)
+    {
+        int x = vector.x;
+        int y = vector.y;
+
+        Vector2Int swapedVector = new Vector2Int(y, x);
+
+        return swapedVector;
+    }
+
+    public static List<Vector2Int> swap_XandY(List<Vector2Int> inputList)
+    {
+        List<Vector2Int> output_list = new List<Vector2Int>();
+
+        foreach(Vector2Int vector in inputList)
+        {
+
+
+            output_list.Add(swap_XandY(vector));
+        }
+
+        return output_list;
+    }
+
+    public static Vector2Int  negY(Vector2Int point)
+    {
+        return new Vector2Int(point.x, -point.y);
+    }
+
+    public static List<Vector2Int> negY(List<Vector2Int> inputList)
+    {
+        List<Vector2Int> output_list = new List<Vector2Int>();
+        foreach(Vector2Int vector in inputList)
+        {
+            output_list.Add(negY(vector));
+        }
+        return output_list;
+    }
+
+    void floodFill( Vector2Int seed, int fillcollor)
+    {
+        //seedColor = getColorAt(seed);
+        
+        
+    }
+
+
 
 }
